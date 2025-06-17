@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reject All Cookies</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="popup-container">
+        <header class="popup-header">
+            <h1>🍪 Reject All Cookies</h1>
+            <p class="subtitle">Automatically reject cookie consent banners</p>
+        </header>
+
+        <main class="popup-content">
+            <!-- Status Section -->
+            <section class="status-section">
+                <div class="status-card">
+                    <div class="status-indicator" id="statusIndicator">
+                        <div class="status-dot"></div>
+                        <span id="statusText">Active</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="enabledToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="stats-section">
+                <h3>Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalRejects">0</span>
+                        <span class="stat-label">Cookies Rejected</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="sitesCount">0</span>
+                        <span class="stat-label">Sites Protected</span>
+                    </div>
+                </div>
+                <div class="last-activity">
+                    <span id="lastActivity">No recent activity</span>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="settings-section">
+                <h3>Settings</h3>
+                <div class="setting-item">
+                    <label for="notificationsToggle">Show notifications</label>
+                    <label class="toggle-switch small">
+                        <input type="checkbox" id="notificationsToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label for="autoModeToggle">Auto mode</label>
+                    <label class="toggle-switch small">
+                        <input type="checkbox" id="autoModeToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Actions Section -->
+            <section class="actions-section">
+                <button id="resetStatsBtn" class="action-button secondary">
+                    Reset Statistics
+                </button>
+                <button id="testBtn" class="action-button secondary">
+                    Test on Current Page
+                </button>
+            </section>
+
+            <!-- Recent Sites -->
+            <section class="recent-sites-section">
+                <h3>Recent Sites</h3>
+                <div id="recentSitesList" class="sites-list">
+                    <p class="no-sites">No sites processed yet</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="popup-footer">
+            <p>Made with ❤️ for privacy</p>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html> 
