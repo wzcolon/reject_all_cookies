@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reject All Cookies - Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        .test-button:hover {
+            background: #5a67d8;
+        }
+        
+        /* Cookie Banner Styles */
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid #ddd;
+            padding: 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .cookie-banner.show {
+            display: block;
+        }
+        
+        .banner-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .banner-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .banner-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .banner-button {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .banner-button.primary {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .banner-button.secondary {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+        
+        .banner-button:hover {
+            opacity: 0.9;
+        }
+        
+        .log {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 2px 0;
+        }
+        
+        @media (max-width: 600px) {
+            .banner-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .banner-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍪 Reject All Cookies - Extension Test Page</h1>
+        
+        <p>This test page helps you verify that the Reject All Cookies extension is working correctly. The extension should automatically detect and click the "Reject All" button on cookie consent banners.</p>
+        
+        <h2>Test Controls</h2>
+        <button class="test-button" onclick="showCookieBanner('onetrust')">Show OneTrust Banner</button>
+        <button class="test-button" onclick="showCookieBanner('cookiebot')">Show Cookiebot Banner</button>
+        <button class="test-button" onclick="showCookieBanner('generic')">Show Generic Banner</button>
+        <button class="test-button" onclick="clearLog()">Clear Log</button>
+        
+        <h2>Instructions</h2>
+        <ol>
+            <li>Make sure the Reject All Cookies extension is installed and enabled</li>
+            <li>Click one of the test buttons above to show a cookie banner</li>
+            <li>Watch as the extension automatically detects and clicks "Reject All"</li>
+            <li>Check the log below to see what happened</li>
+        </ol>
+        
+        <h2>Extension Status</h2>
+        <p id="extensionStatus">Checking extension status...</p>
+        
+        <h2>Activity Log</h2>
+        <div id="log" class="log">
+            <div class="log-entry">Ready to test. Click a button above to show a cookie banner.</div>
+        </div>
+    </div>
+
+    <!-- Cookie Banners -->
+    
+    <!-- OneTrust Style Banner -->
+    <div id="onetrust-consent-sdk" class="cookie-banner">
+        <div class="banner-content">
+            <div class="banner-text">
+                <strong>Your Privacy Choices</strong><br>
+                We use cookies to enhance your experience. Please choose your cookie preferences.
+            </div>
+            <div class="banner-buttons">
+                <button class="banner-button primary" onclick="acceptCookies('OneTrust Accept All')">Accept All</button>
+                <button id="onetrust-reject-all-handler" class="banner-button secondary" onclick="rejectCookies('OneTrust Reject All')">Reject All</button>
+                <button class="banner-button" onclick="customizeCookies('OneTrust Customize')">Customize Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cookiebot Style Banner -->
+    <div id="CybotCookiebotDialog" class="cookie-banner">
+        <div class="banner-content">
+            <div class="banner-text">
+                <strong>Cookie Consent</strong><br>
+                This website uses cookies to ensure you get the best experience on our website.
+            </div>
+            <div class="banner-buttons">
+                <button class="banner-button primary" onclick="acceptCookies('Cookiebot Accept')">Allow all cookies</button>
+                <button id="CybotCookiebotDialogBodyButtonDecline" class="banner-button secondary" onclick="rejectCookies('Cookiebot Decline')">Decline</button>
+                <button class="banner-button" onclick="customizeCookies('Cookiebot Settings')">Cookie Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Generic Style Banner -->
+    <div id="cookie-consent-generic" class="cookie-banner">
+        <div class="banner-content">
+            <div class="banner-text">
+                <strong>Privacy Notice</strong><br>
+                We respect your privacy. Choose how you want to share your data with us.
+            </div>
+            <div class="banner-buttons">
+                <button class="banner-button primary" onclick="acceptCookies('Generic Accept')">Accept All</button>
+                <button class="reject-all-cookies banner-button secondary" onclick="rejectCookies('Generic Reject All')">Reject All</button>
+                <button class="banner-button" onclick="customizeCookies('Generic Manage')">Manage Preferences</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logCount = 1;
+        
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            
+            if (type === 'success') {
+                entry.style.color = '#28a745';
+            } else if (type === 'error') {
+                entry.style.color = '#dc3545';
+            }
+            
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            logCount++;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '<div class="log-entry">Log cleared. Ready for new tests.</div>';
+            logCount = 1;
+        }
+        
+        function showCookieBanner(type) {
+            // Hide all banners first
+            document.querySelectorAll('.cookie-banner').forEach(banner => {
+                banner.classList.remove('show');
+            });
+            
+            // Show the selected banner
+            let bannerId;
+            switch(type) {
+                case 'onetrust':
+                    bannerId = 'onetrust-consent-sdk';
+                    log('Showing OneTrust-style cookie banner');
+                    break;
+                case 'cookiebot':
+                    bannerId = 'CybotCookiebotDialog';
+                    log('Showing Cookiebot-style cookie banner');
+                    break;
+                case 'generic':
+                    bannerId = 'cookie-consent-generic';
+                    log('Showing generic cookie banner');
+                    break;
+            }
+            
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.classList.add('show');
+                log(`Banner displayed. Extension should detect it automatically...`);
+                
+                // Set a timeout to check if banner is still visible
+                setTimeout(() => {
+                    if (banner.classList.contains('show')) {
+                        log('⚠️ Banner still visible after 5 seconds. Extension may not be working.', 'error');
+                    }
+                }, 5000);
+            }
+        }
+        
+        function acceptCookies(buttonText) {
+            log(`❌ WRONG! Extension clicked "${buttonText}" instead of reject button!`, 'error');
+            hideAllBanners();
+        }
+        
+        function rejectCookies(buttonText) {
+            log(`✅ SUCCESS! Extension correctly clicked "${buttonText}"`, 'success');
+            hideAllBanners();
+        }
+        
+        function customizeCookies(buttonText) {
+            log(`❌ WRONG! Extension clicked "${buttonText}" instead of reject button!`, 'error');
+            hideAllBanners();
+        }
+        
+        function hideAllBanners() {
+            document.querySelectorAll('.cookie-banner').forEach(banner => {
+                banner.classList.remove('show');
+            });
+        }
+        
+        // Check if extension is loaded
+        function checkExtensionStatus() {
+            const statusElement = document.getElementById('extensionStatus');
+            
+            // Try to detect if the extension content script is running
+            if (window.chrome && chrome.runtime) {
+                try {
+                    // This will work if extension is loaded
+                    statusElement.innerHTML = '✅ Chrome extension API detected. Extension should be working.';
+                    statusElement.style.color = '#28a745';
+                } catch (e) {
+                    statusElement.innerHTML = '❓ Unable to confirm extension status.';
+                    statusElement.style.color = '#ffc107';
+                }
+            } else {
+                statusElement.innerHTML = '❌ Extension not detected. Make sure it\'s installed and enabled.';
+                statusElement.style.color = '#dc3545';
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExtensionStatus();
+            log('Test page loaded. Extension should be monitoring for cookie banners.');
+            
+            // Add a note about the extension
+            setTimeout(() => {
+                log('💡 TIP: Open browser DevTools (F12) and check the Console tab for extension debug messages.');
+            }, 2000);
+        });
+        
+        // Listen for clicks to detect extension activity
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('banner-button')) {
+                log(`Button clicked: "${e.target.textContent}"`);
+            }
+        });
+    </script>
+</body>
+</html> 
